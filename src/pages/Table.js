@@ -35,7 +35,7 @@ export default function Table(){
   }
 
   const controlCard = (value) => {
-    setCard({active: value.active, title: value.title});
+    setCard({id: value.id, active: value.active, title: value.title});
   }
 
   return(
@@ -101,9 +101,9 @@ export default function Table(){
                         </div>
                       </td>
                       <td className="px-3 py-[11px] flex justify-center space-x-2 text-gray-900">
-                        <div className="w-[30px] h-[30px] bg-blue-300 flex justify-center items-center rounded-md cursor-pointer" onClick={()=>controlCard({active: true, title: 'Detail'})}><HIcon.HiEye /></div>
-                        <div className="w-[30px] h-[30px] bg-green-300 flex justify-center items-center rounded-md cursor-pointer" onClick={()=>controlCard({active: true, title: 'Edit'})}><HIcon.HiPencilAlt /></div>
-                        <div className="w-[30px] h-[30px] bg-red-300 flex justify-center items-center rounded-md cursor-pointer" onClick={()=>controlCard({active: true, title: 'Delete'})}><HIcon.HiTrash /></div>
+                        <div className="w-[30px] h-[30px] bg-blue-300 flex justify-center items-center rounded-md cursor-pointer" onClick={()=>controlCard({id: e.id, active: true, title: 'Detail'})}><HIcon.HiEye className="text-[#0E054D]" /></div>
+                        <div className="w-[30px] h-[30px] bg-green-300 flex justify-center items-center rounded-md cursor-pointer" onClick={()=>controlCard({id: e.id, active: true, title: 'Edit'})}><HIcon.HiPencilAlt className="text-[#0E054D]" /></div>
+                        <div className="w-[30px] h-[30px] bg-red-300 flex justify-center items-center rounded-md cursor-pointer" onClick={()=>controlCard({id: e.id, active: true, title: 'Delete'})}><HIcon.HiTrash className="text-[#0E054D]" /></div>
                       </td>
                     </tr>
                   )
@@ -144,9 +144,12 @@ export default function Table(){
         card.active &&
         <div className="absolute top-0 w-full h-full flex justify-center items-center bg-black/50">
           <div className="w-[400px] h-[450px] rounded-2xl p-5 bg-white">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center border-b-[1px] pb-2">
               <span className="text-xl font-semibold">{card.title} Contact Us</span>
               <HIcon.HiX className="text-2xl cursor-pointer" onClick={() => controlCard({active: false})} />
+            </div>
+            <div className="pt-2">
+              ID: {card.id}
             </div>
           </div>
         </div>
