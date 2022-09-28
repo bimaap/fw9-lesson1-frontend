@@ -1,17 +1,20 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from 'axios';
 
-export const getData = createAsyncThunk("contactUs/getData", async () => {
+export const getData = createAsyncThunk("contactUs/getData", async (query) => {
   const result = {};
+  const page = query.page
+  const search = query.search || ''
+  const limit = query.limit || 8
+
   try {
-    const { data } = await axios.get("http://localhost:8080/contact/");
+    const { data } = await axios.get(`http://localhost:8080/contact/?page=${page}&search=${search}&limit=${limit}`);
     return data;
   } catch (e) {
     result.errorMsg = e.response.data.message;
     return result;
   }
 });
-
 
 export const createData = createAsyncThunk("contactUs/createData", async (request) => {
   const result = {};

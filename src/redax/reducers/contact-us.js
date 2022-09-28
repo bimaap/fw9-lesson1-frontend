@@ -18,12 +18,12 @@ const contactUs = createSlice({
   },
   extraReducers: (build) => {
     build.addCase(getData.fulfilled, (state, action) => {
-      state.data = action.payload.results;
+      state.data = action.payload;
     });
 
     build.addCase(createData.fulfilled, (state, action) => {
-      state.message = action.payload.message;
-      state.success = action.payload.success;
+      state.message = action.payload?.message;
+      state.success = action.payload?.success;
     });
   }
 });
