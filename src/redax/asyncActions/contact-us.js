@@ -16,6 +16,17 @@ export const getData = createAsyncThunk("contactUs/getData", async (query) => {
   }
 });
 
+export const getDataById = createAsyncThunk("contactUs/getDataById", async (query) => {
+  const result = {};
+  try {
+    const { data } = await axios.get(`http://localhost:8080/contact/${query.id}`);
+    return data;
+  } catch (e) {
+    result.errorMsg = e.response.data.message;
+    return result;
+  }
+});
+
 export const createData = createAsyncThunk("contactUs/createData", async (request) => {
   const result = {};
   try {

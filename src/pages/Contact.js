@@ -65,8 +65,8 @@ export default function Contact(){
           </Link>
         </div>
       </div>
-      <div className="flex flex-col items-center justify-center w-full h-[100vh] overflow-hidden bg-gray-200 space-y-[70px]">
-        <div className="flex flex-col items-center space-y-5">
+      <div className="flex flex-col items-center justify-center w-full h-[100vh] overflow-hidden bg-gray-200 space-y-[50px]">
+        <div className="flex flex-col items-center space-y-2">
           <span className="font-extrabold text-[45px] text-[#0E054D]">Contact Us</span>
           <span className="font-normal text-[18px] text-gray-500">Any question or remarks? Just write us a message!</span>
         </div>
