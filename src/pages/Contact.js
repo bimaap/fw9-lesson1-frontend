@@ -2,14 +2,13 @@ import React from "react";
 import * as HIcon from "react-icons/hi";
 import * as FIcon from "react-icons/fa";
 import * as AIcon from "react-icons/ai";
-import { getData, createData } from "../redax/asyncActions/contact-us";
+import { createData } from "../redax/asyncActions/contact-us";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { cleanAction } from "../redax/reducers/contact-us";
 
 export default function Contact(){
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const success = useSelector((state) => state.contactUs.success)
   const msgSuccess = useSelector((state) => state.contactUs.message)
   const [msgError, setMsgError] = React.useState("")
@@ -23,14 +22,17 @@ export default function Contact(){
 
   const onClickSubmit = (e) => {
     e.preventDefault();
-    firstName && lastName && email && phone && needed && message?
+    setLoading(true)
+    if(firstName && lastName && email && phone && needed && message){
       dispatch(createData({firstName, lastName, email, phone, needed, message}))
-      : setMsgError("All data must be filled")
+    }else{
+      setMsgError("All data must be filled")
+      setLoading(false)
+    }
   }
 
   React.useEffect(()=>{
     if(success){
-      setLoading(true)
       setTimeout(()=>{
         setLoading(false)
         setFirstName("")
@@ -50,7 +52,7 @@ export default function Contact(){
     setTimeout(()=>{
       setMsgError("")
     }, 2000);
-  }, [success, msgError])
+  }, [success, msgError, dispatch])
 
   return(
     <>

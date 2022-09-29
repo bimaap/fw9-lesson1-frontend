@@ -1,10 +1,9 @@
 import React from "react";
 import * as HIcon from "react-icons/hi";
-import * as FIcon from "react-icons/fa";
 import * as AIcon from "react-icons/ai";
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from "react-redux";
-import { getData, getDataById } from "../redax/asyncActions/contact-us";
+import { getData, getDataById, updateData, deleteData } from "../redax/asyncActions/contact-us";
 
 
 export default function Table(){
@@ -16,12 +15,13 @@ export default function Table(){
   const [limit, setLimit] = React.useState(8);
   const [card, setCard] = React.useState({active: false})
 
-  const [firstName, setFirstName] = React.useState("")
-  const [lastName, setLastName] = React.useState("")
-  const [email, setEmail] = React.useState("")
-  const [phone, setPhone] = React.useState("")
+  // const [firstName, setFirstName] = React.useState("")
+  // const [lastName, setLastName] = React.useState("")
+  // const [email, setEmail] = React.useState("")
+  // const [phone, setPhone] = React.useState("")
   const [needed, setNeeded] = React.useState("1")
-  const [message, setMessage] = React.useState("")
+  // const [message, setMessage] = React.useState("")
+  const [loading, setLoading] = React.useState(false)
 
   React.useEffect(()=>{
     dispatch(getData({}))
@@ -44,16 +44,43 @@ export default function Table(){
 
   const controlCard = (value) => {
     setCard({id: value.id, active: value.active, title: value.title});
-    dispatch(getDataById({id: value.id}))
+    if(value.id){
+      setNeeded(value.needed)
+      dispatch(getDataById({id: value.id}))
+    }
   }
 
-  const onClickSubmit = (e) => {
+  const onEditContact = (e, id) => {
     e.preventDefault();
+    
+    e.target[0].value && e.target[1].value && e.target[2].value && e.target[3].value && needed && e.target[8].value &&
+      dispatch(updateData({
+        firstName: e.target[0].value, 
+        lastName: e.target[1].value, 
+        email: e.target[2].value, 
+        phone: e.target[3].value, 
+        needed, 
+        message: e.target[8].value, 
+        id
+      }))
+    
+    setLoading(true)
+    setTimeout(()=>{
+      controlCard({active: false})
+      dispatch(getData({}))
+      setLoading(false)
+    }, 2000);
+  }
 
-    console.log(firstName, lastName);
-    // firstName && lastName && email && phone && needed && message?
-    //   dispatch(createData({firstName, lastName, email, phone, needed, message}))
-    //   : setMsgError("All data must be filled")
+  const onDeleteContact = (id) => {
+    setLoading(true)
+    dispatch(deleteData({id}))
+
+    setTimeout(()=>{
+      controlCard({active: false})
+      dispatch(getData({}))
+      setLoading(false)
+    }, 2000);
   }
 
   return(
@@ -120,9 +147,9 @@ export default function Table(){
                         </div>
                       </td>
                       <td className="px-3 py-[11px] flex justify-center space-x-2 text-gray-900">
-                        <div className="w-[30px] h-[30px] bg-blue-300 flex justify-center items-center rounded-md cursor-pointer" onClick={()=>controlCard({id: e.id, active: true, title: 'Detail'})}><HIcon.HiEye className="text-[#0E054D]" /></div>
-                        <div className="w-[30px] h-[30px] bg-green-300 flex justify-center items-center rounded-md cursor-pointer" onClick={()=>controlCard({id: e.id, active: true, title: 'Edit'})}><HIcon.HiPencilAlt className="text-[#0E054D]" /></div>
-                        <div className="w-[30px] h-[30px] bg-red-300 flex justify-center items-center rounded-md cursor-pointer" onClick={()=>controlCard({id: e.id, active: true, title: 'Delete'})}><HIcon.HiTrash className="text-[#0E054D]" /></div>
+                        <div className="w-[30px] h-[30px] bg-blue-300 flex justify-center items-center rounded-md cursor-pointer" onClick={()=>controlCard({id: e.id, active: true, title: 'Detail', needed: e.needed})}><HIcon.HiEye className="text-[#0E054D]" /></div>
+                        <div className="w-[30px] h-[30px] bg-green-300 flex justify-center items-center rounded-md cursor-pointer" onClick={()=>controlCard({id: e.id, active: true, title: 'Edit', needed: e.needed})}><HIcon.HiPencilAlt className="text-[#0E054D]" /></div>
+                        <div className="w-[30px] h-[30px] bg-red-300 flex justify-center items-center rounded-md cursor-pointer" onClick={()=>controlCard({id: e.id, active: true, title: 'Delete', needed: e.needed})}><HIcon.HiTrash className="text-[#0E054D]" /></div>
                       </td>
                     </tr>
                   )
@@ -192,7 +219,7 @@ export default function Table(){
                           {dataContact?.phone}
                         </span>
                       </div>
-                      <div className="flex flex-col border px-2 py-1 h-[190px]">
+                      <div className="flex flex-col border px-2 py-1 h-[240px]">
                         <span className="text-xs">Message for <span className="font-semibold">{dataContact?.needed === "1"? "Web Design":dataContact?.needed === "2"? "Web Development":dataContact?.needed === "3"? "Logo Design":"Other"}</span></span>
                         <span className="font-semibold overflow-x-auto">
                           {dataContact?.message}
@@ -202,16 +229,16 @@ export default function Table(){
                   }
                   {
                     card.title === 'Edit' &&
-                    <form className="flex flex-col" onSubmit={onClickSubmit}>
+                    <form className="flex flex-col" onSubmit={(e)=> onEditContact(e, card.id)}>
                       <div className="flex flex-col mb-1">
                         <div className="flex space-x-2">
                           <div className="flex px-2 py-1 flex-col flex-1 border">
                             <span className="text-xs">First Name</span>
-                            <input type="text" placeholder="Joe..." onChange={(text)=>setFirstName(text.target.value)} className="outline-none bg-slate-100 w-full" defaultValue="" />
+                            <input type="text" placeholder="Joe..." className="outline-none bg-slate-100 w-full" defaultValue={dataContact?.first_name} />
                           </div>
                           <div className="flex px-2 py-1 flex-col flex-1 border">
                             <span className="text-xs">Last Name</span>
-                            <input type="text" placeholder="Don..." onChange={(text)=>setLastName(text.target.value)} className="outline-none bg-slate-100 w-full" defaultValue="" />
+                            <input type="text" placeholder="Don..." className="outline-none bg-slate-100 w-full" defaultValue={dataContact?.last_name} />
                           </div>
                         </div>
                         <span className="text-xs text-red-500 invisible">Error</span>
@@ -219,14 +246,14 @@ export default function Table(){
                       <div className="flex flex-col mb-1">
                         <div className="flex flex-col border px-2 py-1">
                           <span className="text-xs">Email</span>
-                          <input type="text" placeholder="example@mail.com" onChange={(text)=>setEmail(text.target.value)} className="outline-none bg-slate-100 w-full" defaultValue="" />
+                          <input type="text" placeholder="example@mail.com" className="outline-none bg-slate-100 w-full" defaultValue={dataContact?.email} />
                         </div>
                         <span className="text-xs text-red-500 invisible">Error</span>
                       </div>
                       <div className="flex flex-col mb-1">
                         <div className="flex flex-col border px-2 py-1">
                           <span className="text-xs">Phone</span>
-                          <input type="text" placeholder="0812637217232" onChange={(text)=>setPhone(text.target.value)} className="outline-none bg-slate-100 w-full" defaultValue="" />
+                          <input type="text" placeholder="0812637217232" className="outline-none bg-slate-100 w-full" defaultValue={dataContact?.phone} />
                         </div>
                         <span className="text-xs text-red-500 invisible">Error</span>
                       </div>
@@ -258,12 +285,34 @@ export default function Table(){
                       <div className="flex flex-col mb-1">
                         <div className="flex flex-col border px-2 py-1 h-[70px]">
                           <span className="text-xs">Message</span>
-                          <textarea className="outline-none bg-slate-100 h-full" onChange={(text)=>setMessage(text.target.value)} placeholder="Write your message..." defaultValue="" />
+                          <textarea className="outline-none bg-slate-100 h-full" placeholder="Write your message..." defaultValue={dataContact?.message} />
                         </div>
                         <span className="text-xs text-red-500 invisible">Error</span>
                       </div>
-                      <button type="submit" className="bg-[#0E054D] h-[48px] text-white rounded-lg">Edit</button>
+                      <button type="submit" className="flex items-center justify-center space-x-2 bg-[#0E054D] h-[48px] rounded-lg text-white font-semibold">
+                        {loading&&<AIcon.AiOutlineLoading3Quarters className="animate-spin h-5 w-5 text-white" />} 
+                        <span>Edit</span>
+                      </button>
                     </form>
+                  }
+                  {
+                    card.title === 'Delete' &&
+                    <div className="h-full flex items-center flex-col justify-center">
+                      <div className="flex flex-1 items-center flex-col justify-center space-y-7">
+                        <HIcon.HiExclamationCircle className="text-[65px] text-red-500" />
+                        <span className="text-2xl font-bold">Are you sure?</span>
+                        <span className="text-center">Do you want to delete these contact records? This process cannot be undone after confimation delete.</span>
+                      </div>
+                      <div className="flex w-full space-x-2">
+                        <button onClick={() => controlCard({active: false})} type="submit" className="flex flex-1 items-center justify-center space-x-2 bg-gray-300 h-[48px] rounded-lg text-black font-semibold">
+                          <span>Cancel</span>
+                        </button>
+                        <button onClick={() => onDeleteContact(card.id)} type="submit" className="flex flex-1 items-center justify-center space-x-2 bg-red-500 h-[48px] rounded-lg text-white font-semibold">
+                          {loading&&<AIcon.AiOutlineLoading3Quarters className="animate-spin h-5 w-5 text-white" />} 
+                          <span>Delete</span>
+                        </button>
+                      </div>
+                    </div>
                   }
                 </div>
               }

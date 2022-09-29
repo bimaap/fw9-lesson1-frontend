@@ -1,6 +1,6 @@
 
 import { createSlice } from "@reduxjs/toolkit";
-import { getData, createData, getDataById } from "../asyncActions/contact-us";
+import { getData, createData, getDataById, updateData, deleteData } from "../asyncActions/contact-us";
 
 const initialState = {
   data: {},
@@ -34,9 +34,19 @@ const contactUs = createSlice({
       state.message = action.payload?.message;
       state.success = action.payload?.success;
     });
+
+    build.addCase(updateData.fulfilled, (state, action) => {
+      state.message = action.payload?.message;
+      state.success = action.payload?.success;
+    });
+
+    build.addCase(deleteData.fulfilled, (state, action) => {
+      state.message = action.payload?.message;
+      state.success = action.payload?.success;
+    });
   }
 });
 
-export { getData, createData };
+export { getData, getDataById, createData, updateData, deleteData };
 export const { cleanAction } = contactUs.actions;
 export default contactUs.reducer;
