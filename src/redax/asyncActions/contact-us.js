@@ -6,9 +6,10 @@ export const getData = createAsyncThunk("contactUs/getData", async (query) => {
   const page = query.page || 1
   const search = query.search || ''
   const limit = query.limit || 8
+  const sort = query.sort || 'asc'
 
   try {
-    const { data } = await axios.get(`https://lesson-backend.vercel.app/contact/?page=${page}&search=${search}&limit=${limit}`);
+    const { data } = await axios.get(`https://lesson-backend.vercel.app/contact/?page=${page}&search=${search}&limit=${limit}&sort=${sort}`);
     return data;
   } catch (e) {
     result.errorMsg = e.response.data.message;
