@@ -45,7 +45,7 @@ export default function Table(){
 
   const controlSearch = (value) => {
     setSearch(value);
-    dispatch(getData({page: 1, search: value, limit, sort}))
+    dispatch(getData({page: 1, search: value, limit: 8, sort: 'asc'}))
   }
 
   const controlLimit = (value) => {
@@ -55,7 +55,7 @@ export default function Table(){
 
   const controlSort = (value) => {
     setSort(value);
-    dispatch(getData({page: 1, search, limit, sort: value}))
+    dispatch(getData({page, search, limit, sort: value}))
   }
 
   const controlCard = (value) => {
@@ -210,7 +210,7 @@ export default function Table(){
                   return(
                     <tr key={i} className="bg-white h-[25px] border-b border-[#0E054D]">
                       <td className="px-3 py-[11px] w-[30px] text-gray-900 border-r border-[#0E054D]">
-                        {sort === 'asc'? (i+1 + (page - 1) * limit):((parseInt(data.pageInfo.totalData)-i) - (page - 1) * limit)}
+                        {search? i+1 : sort === 'asc'? (i+1 + (page - 1) * limit):((parseInt(data.pageInfo.totalData)-i) - (page - 1) * limit)}
                       </td>
                       <td className="px-3 py-[11px] max-w-[170px] text-gray-900 border-r border-[#0E054D]">
                         <div className="w-full whitespace-nowrap text-ellipsis overflow-hidden">
